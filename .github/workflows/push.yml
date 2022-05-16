@@ -1,0 +1,27 @@
+on:
+  push:
+    branches:
+      - master
+      - develop
+name: Deploy workflow
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy
+      uses: rtCamp/action-deploy-wordpress@master
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        JUMPHOST_SERVER: jumphost.rstuff.in
+        WP_VERSION: 5.8.1
+
+    - name: Slack Notification On Success
+      uses: rtCamp/action-slack-notify@master
+      env:
+        SLACK_CHANNEL: bots-hcl
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+    - name: Cleanup
+      if: ${{ always() }}
+      uses: rtCamp/action-cleanup@master

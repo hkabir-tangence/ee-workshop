@@ -1,0 +1,27 @@
+on:
+  push:
+    branches:
+      - develop-disable
+name: WP Plugin Auto Update
+jobs:
+  WPAutoUpdate:
+    name: WP plugin auto update
+    runs-on: self-hosted
+    steps:
+    - name: Set reference branch for plugin update
+      id: ref-branch
+      env:
+        REFERENCE_BRANCH: "master"
+      run: echo ::set-output name=ref_branch::$(echo "$REFERENCE_BRANCH")
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ steps.ref-branch.outputs.ref_branch }}
+    - name: WP plugin auto update
+      uses: docker://rtcamp/action-plugin-update:v1.0.2
+      env:
+        REFERENCE_BRANCH: ${{ steps.ref-branch.outputs.ref_branch }}
+        BASE_BRANCH: "master,develop"
+        WP_BOT_TOKEN: ${{ secrets.RTBOT_TOKEN }}
+    - name: Cleanup
+      if: ${{ always() }}
+      uses: rtCamp/action-cleanup@master
