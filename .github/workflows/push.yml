@@ -14,9 +14,9 @@ jobs:
       uses: rtCamp/action-deploy-wordpress@master
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        JUMPHOST_SERVER: jumphost.rstuff.in
+        JUMPHOST_SERVER: 50.17.160.169
         WP_VERSION: 5.8.1
 
     - name: Cleanup
       if: ${{ always() }}
-      uses: rtCamp/action-cleanup@master
+      uses: root/action-cleanup@master
